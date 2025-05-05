@@ -8,7 +8,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 import config
 from nn_nkf import NNAKF
-from data_loader import get_ngsim_dataloader, generate_synthetic_trajectories
+from data_loader import get_ngsim_dataloaders, generate_synthetic_trajectories
 
 np.random.seed(0)
 torch.manual_seed(0)
@@ -133,7 +133,6 @@ def main():
         )  # consider splitting by Vehicle_ID for real validation
         '''
         # With splits [NEW]
-        from data_loader import get_ngsim_dataloaders
         train_loader, val_loader = get_ngsim_dataloaders(
             str(config.NGSIM_RAW_CSV),
             args.seq_length,

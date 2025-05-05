@@ -21,7 +21,6 @@ def compute_rmse(est, true):
 
 
 def evaluate_on_synthetic(model, use_kf, seq_length, device):
-    # generate a small synthetic test set
     states, measurements = generate_synthetic_trajectories(200, seq_length)
     meas_t = torch.tensor(measurements, dtype=torch.float32).to(device)
     true_t = torch.tensor(states, dtype=torch.float32).to(device)
@@ -34,7 +33,6 @@ def evaluate_on_synthetic(model, use_kf, seq_length, device):
         vy0 = (z1[1] - z0[1]) / config.DT
         kf.x = np.array([z1[0], z1[1], vx0, vy0])
         for seq in measurements:
-            # For synthetic, initial state at origin is correct
             kf.x = np.zeros(config.STATE_DIM)
             kf.P = np.eye(config.STATE_DIM)
             est_seq = []
@@ -74,7 +72,6 @@ def evaluate_on_ngsim(model, use_kf, csv_path, seq_length, batch_size, device):
             # KF baseline estimates
             kf_batch = []
             for seq in meas.cpu().numpy():
-                # Initialize filter state to first measurement (zero velocity)
                 z0 = seq[0]
                 kf.x = np.array([z0[0], z0[1], 0.0, 0.0])
                 kf.P = np.eye(config.STATE_DIM)

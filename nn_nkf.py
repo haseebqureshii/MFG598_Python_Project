@@ -36,7 +36,7 @@ class NNAKF(nn.Module):
         r0 = config.MEAS_NOISE_STD ** 2
         self.register_buffer('R', torch.eye(meas_dim) * r0)
 
-        # Trainable additional noise matrices Q̃_i
+        # Trainable additional noise matrices Q_i
         # Initialized small to perturb around Q0
         init = torch.eye(state_dim).unsqueeze(0).repeat(self.N, 1, 1) * 1e-3
         self.Q_tilde = nn.Parameter(init)
@@ -79,7 +79,7 @@ class NNAKF(nn.Module):
             x_pred = (F @ x.unsqueeze(-1)).squeeze(-1)       # (B, state_dim)
             P_pred0 = F @ P @ F.t() + Q0                     # (B, state_dim, state_dim)
 
-            # 2) Compute normalized squared innovations In,j (Eq. 11) citeturn1file0
+            # 2) Compute normalized squared innovations In,j (Eq. 11)
             innovation = z - (H @ x_pred.unsqueeze(-1)).squeeze(-1)
             S0 = H @ P_pred0 @ H.t() + R
             In = innovation.pow(2) / torch.diagonal(S0, dim1=-2, dim2=-1)

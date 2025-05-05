@@ -9,9 +9,7 @@ class KalmanFilter:
     Implements Eqs. (1)–(7) from the reference.
     """
     def __init__(self):
-        # time step
         dt = config.DT
-
         # State transition matrix (constant velocity model)
         self.F = np.array([
             [1, 0, dt, 0],
@@ -19,7 +17,6 @@ class KalmanFilter:
             [0, 0, 1,  0],
             [0, 0, 0,  1]
         ])
-
         # Observation matrix (we measure positions only)
         self.H = np.array([
             [1, 0, 0, 0],
@@ -29,14 +26,11 @@ class KalmanFilter:
         # Fixed process noise covariance Q = q * I
         q = config.PROCESS_NOISE_STD ** 2
         self.Q = q * np.eye(config.STATE_DIM)
-
         # Fixed measurement noise covariance R = r * I
         r = config.MEAS_NOISE_STD ** 2
         self.R = r * np.eye(config.MEASUREMENT_DIM)
-
         # Initial state estimate (zeros)
         self.x = np.zeros((config.STATE_DIM,))
-
         # Initial estimate covariance (identity)
         self.P = np.eye(config.STATE_DIM)
 
@@ -61,16 +55,12 @@ class KalmanFilter:
         """
         # Innovation
         y = z - (self.H @ self.x)
-
         # Innovation covariance
         S = self.H @ self.P @ self.H.T + self.R
-
         # Kalman gain
         K = self.P @ self.H.T @ np.linalg.inv(S)
-
         # State update
         self.x = self.x + K @ y
-
         # Covariance update
         I = np.eye(self.P.shape[0])
         self.P = (I - K @ self.H) @ self.P
